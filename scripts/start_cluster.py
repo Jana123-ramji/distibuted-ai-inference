@@ -19,9 +19,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 
-NUM_WORKERS = 4
-BASE_WORKER_PORT = 8001
-API_PORT = 8000
+NUM_WORKERS = int(os.getenv("NUM_WORKERS", "4"))
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("PORT", os.getenv("API_PORT", "8000")))
+
+# Use distinct internal ports for the workers that do not clash with API_PORT
+BASE_WORKER_PORT = int(os.getenv("BASE_WORKER_PORT", "8001"))
+if BASE_WORKER_PORT <= API_PORT < BASE_WORKER_PORT + NUM_WORKERS:
+    BASE_WORKER_PORT = API_PORT + 1
 
 
 def main() -> int:
@@ -49,7 +54,7 @@ def main() -> int:
     env_base["SCHEDULER_STRATEGY"] = "round_robin"
 
     # 1. Start API Gateway
-    print(f"[CLUSTER] Starting API Gateway on http://127.0.0.1:{API_PORT}...")
+    print(f"[CLUSTER] Starting API Gateway on {API_HOST}:{API_PORT}...")
     api_proc = subprocess.Popen(
         [
             PYTHON,
@@ -57,7 +62,7 @@ def main() -> int:
             "uvicorn",
             "api.main:app",
             "--host",
-            "127.0.0.1",
+            API_HOST,
             "--port",
             str(API_PORT),
         ],
