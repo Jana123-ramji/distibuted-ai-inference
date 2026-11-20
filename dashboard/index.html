@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Distributed AI Inference Platform</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Distributed AI Inference Platform</h1>
+      <p class="subtitle">FastAPI gateway &middot; least-loaded scheduler &middot; Mojo preprocessing &middot; MAX / ONNX inference</p>
+    </div>
+    <div class="api-state">
+      <span id="api-dot" class="dot dot-unknown"></span>
+      <span id="api-text">connecting…</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ---------------- system status ---------------- -->
+    <section class="panel">
+      <h2>System status</h2>
+      <div class="stat-grid">
+        <div class="stat"><span class="stat-label">Workers</span><span class="stat-value" id="stat-total-workers">–</span></div>
+        <div class="stat"><span class="stat-label">Healthy</span><span class="stat-value ok" id="stat-healthy">–</span></div>
+        <div class="stat"><span class="stat-label">Busy</span><span class="stat-value warn" id="stat-busy">–</span></div>
+        <div class="stat"><span class="stat-label">Failed / unhealthy</span><span class="stat-value bad" id="stat-unhealthy">–</span></div>
+        <div class="stat"><span class="stat-label">Total requests</span><span class="stat-value" id="stat-total-requests">–</span></div>
+        <div class="stat"><span class="stat-label">Successful</span><span class="stat-value ok" id="stat-success">–</span></div>
+        <div class="stat"><span class="stat-label">Failed</span><span class="stat-value bad" id="stat-failed">–</span></div>
+        <div class="stat"><span class="stat-label">Avg latency</span><span class="stat-value" id="stat-latency">–</span></div>
+      </div>
+      <p class="hint">Data refreshes every 3 seconds from <code>GET /stats</code>, <code>GET /workers</code> and <code>GET /activity</code>.</p>
+    </section>
+
+    <!-- ---------------- inference ---------------- -->
+    <section class="panel">
+      <h2>Run inference</h2>
+      <textarea id="prompt" rows="3" placeholder="Enter your prompt…">Explain artificial intelligence in simple words.</textarea>
+      <div class="controls">
+        <button id="run-btn" class="primary">Run Inference</button>
+        <button id="burst-btn">Send 5 requests (show distribution)</button>
+        <label class="tokens">max tokens
+          <input id="max-tokens" type="number" min="8" max="512" value="64" />
+        </label>
+        <span id="run-status" class="run-status"></span>
+      </div>
+      <div id="result-box" class="result hidden">
+        <div class="result-meta">
+          <span>Worker: <strong id="result-worker">–</strong></span>
+          <span>Latency: <strong id="result-latency">–</strong></span>
+          <span>Backend: <strong id="result-backend">–</strong></span>
+          <span>Mojo preprocessing: <strong id="result-mojo">–</strong></span>
+          <span>Time: <strong id="result-time">–</strong></span>
+        </div>
+        <pre id="result-text"></pre>
+      </div>
+    </section>
+
+    <!-- ---------------- workers ---------------- -->
+    <section class="panel">
+      <h2>Workers</h2>
+      <div id="worker-cards" class="cards">
+        <p class="empty">No workers registered yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- activity ---------------- -->
+    <section class="panel">
+      <h2>Activity log</h2>
+      <table class="activity">
+        <thead>
+          <tr><th>Job ID</th><th>Worker</th><th>Status</th><th>Latency</th><th>Prompt</th><th>Time</th></tr>
+        </thead>
+        <tbody id="activity-body">
+          <tr><td colspan="6" class="empty">No jobs yet.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <span>API base: <code id="api-base"></code></span>
+    <span><a href="/docs" target="_blank" rel="noopener">OpenAPI docs</a></span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Worker image dependencies (CPU fallback backend).
+# Versions pinned to what was installed and verified on 2026-08-31.
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+httpx==0.28.1
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+
+# --- real CPU inference: ONNX Runtime instead of PyTorch ---
+# onnxruntime is a ~14 MB wheel and runs the int8 SmolLM2-135M-Instruct model on
+# any CPU, which keeps the image small enough for a student laptop.
+onnxruntime==1.29.0
+tokenizers==0.23.1
+numpy==2.5.2
+huggingface_hub==1.29.0
+
+# NOTE: the MAX backend (worker/max_engine.py) is installed separately in the
+# Linux image with `pip install max[all]`, because MAX does not run on native
+# Windows. See README "MAX integration".

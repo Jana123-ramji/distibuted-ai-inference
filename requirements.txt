@@ -1,0 +1,25 @@
+# Root requirements: everything needed to run the platform *locally*
+# (no Docker) and to run the test suite.
+#
+#   python -m venv .venv
+#   .venv\Scripts\activate        (Windows)   |   source .venv/bin/activate (Linux/mac)
+#   pip install -r requirements.txt
+#
+# Per-service images use the smaller api/requirements.txt and
+# worker/requirements.txt instead.
+# Versions pinned to what was installed and verified on 2026-08-31.
+
+# --- API gateway + worker HTTP layer ---
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+httpx==0.28.1
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+
+# --- tests ---
+pytest==9.1.1
+pytest-asyncio==1.4.0
+
+# --- CPU inference fallback (Phase 6) is heavy (torch ~250 MB) and lives in
+#     worker/requirements.txt so the API image stays small.

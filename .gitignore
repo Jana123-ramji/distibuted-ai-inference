@@ -1,0 +1,37 @@
+# Secrets / local config
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Model / HF caches (large)
+models/
+.cache/
+hf_cache/
+
+# MAX / Mojo / pixi build artefacts
+.pixi/
+.magic/
+mojo/build/
+mojo/preprocess
+mojo/preprocess.exe
+*.mojopkg
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
