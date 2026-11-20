@@ -29,7 +29,21 @@ if BASE_WORKER_PORT <= API_PORT < BASE_WORKER_PORT + NUM_WORKERS:
     BASE_WORKER_PORT = API_PORT + 1
 
 
+def ensure_model() -> None:
+    """Download ONNX model if not already present."""
+    model_file = ROOT / "models" / "SmolLM2-135M-Instruct" / "onnx" / "model_int8.onnx"
+    if not model_file.is_file():
+        print("[CLUSTER] Model weights not found on disk. Downloading SmolLM2-135M-Instruct...")
+        try:
+            from scripts.download_model import download, DEFAULT_REPO, DEFAULT_ONNX_FILE
+            download(DEFAULT_REPO, DEFAULT_ONNX_FILE, ROOT / "models")
+            print("[CLUSTER] Model download complete.")
+        except Exception as exc:
+            print(f"[CLUSTER] Warning: could not download model automatically: {exc}")
+
+
 def main() -> int:
+    ensure_model()
     procs: list[subprocess.Popen] = []
 
     def cleanup(*_args: object) -> None:
